@@ -257,26 +257,28 @@ getBASSampleDriver <- function(shapefile, bb, n, seeds, verbose = FALSE){
   boxes <- BASInfo$boxes
 
   # number of samples required.
-  draw <- n * 4
+  draw <- n * 6
   # just the first point so far, need n.
   num_samples <- 0
   n_samples <- 0
+
+  ## Track indices to match boxes.
+  boxdraw <- 0
 
   # count number of times we call spbal::getBASSample.
   call.getBASSample.cnt <- 0
   # keep generating BAS samples until we find n sample points in the study area.
   while(num_samples < n){
     # double the number of points to find to try and reduce number of loops.
-    draw <- draw * 2
+    # draw <- draw * 2  ## Can lead to slow results...
 
-    boxes <- boxes + BASInfo$B*call.getBASSample.cnt  ## Go to next set of boxes if repeating loop.
+    boxes <- BASInfo$boxes + BASInfo$B*boxdraw ## Go to next set of boxes if repeating loop.
     ## Create indices repeating every Bth for each box until a full draw is taken.
-    ii <- 1
     while( base::length(boxes) < draw ){
-      boxes <- base::c(boxes, BASInfo$boxes + ii*BASInfo$B)
-      ii <- ii+1
+      boxes <- base::c(boxes, BASInfo$boxes + (boxdraw)*BASInfo$B)
+      boxdraw <- boxdraw+1
     }
-
+    
     # go get sample.
     pts.sample <- getBASSample(shapefile = shapefile, bb = bb , n = draw, seeds = seedshift, boxes = boxes)
     n_samples <- base::length(pts.sample$sample$SiteID)
