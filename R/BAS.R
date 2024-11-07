@@ -275,8 +275,8 @@ getBASSampleDriver <- function(shapefile, bb, n, seeds, verbose = FALSE){
     boxes <- BASInfo$boxes + BASInfo$B*boxdraw ## Go to next set of boxes if repeating loop.
     ## Create indices repeating every Bth for each box until a full draw is taken.
     while( base::length(boxes) < draw ){
-      boxes <- base::c(boxes, BASInfo$boxes + (boxdraw)*BASInfo$B)
       boxdraw <- boxdraw+1
+      boxes <- base::c(boxes, BASInfo$boxes + (boxdraw)*BASInfo$B)
     }
     
     # go get sample.
