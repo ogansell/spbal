@@ -89,5 +89,23 @@ testthat::test_that("6. Verify BAS is drawing the exact same points from previou
   expect_equal(coords, vals)
 })
 
+testthat::test_that("7. Verify BAS does not draw repeated values for large samples.", {
+  set.seed(1)
+
+  ## We will make up a long and skinny shape inside a really big bounding box.
+  ## Then sample and make sure nothing weird happens.
+  vals <- data.frame(X = runif(30, 0, 10), Y = runif(30, 0, 100))
+  bb.df <- c("xmin" = -10.222, "ymin" = -20.1525, "xmax" = 133.54, "ymax" = 525.223)
+  bb <- sf::st_as_sfc(sf::st_bbox(bb.df))
+  shp <- sf::st_as_sf(vals, coords = c("X", "Y")) %>% st_buffer(4) %>% st_union()
+  shp <- sf::st_cast(sf::st_combine(shp), "POLYGON")
+
+  ## Run BAS and get 10000:
+  smp <- spbal::BAS(shapefile = shp, n = 10000, boundingbox = bb, seeds = c(157,357))
+  nunique <- length(unique(smp$sample$SiteID))
+
+  ## Throw an error if any updates in the BAS start to not create all unique points.
+  expect_equal(nunique, 10000)
+})
 
 
