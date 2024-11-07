@@ -278,7 +278,8 @@ getBASSampleDriver <- function(shapefile, bb, n, seeds, verbose = FALSE){
       boxdraw <- boxdraw+1
       boxes <- base::c(boxes, BASInfo$boxes + (boxdraw)*BASInfo$B)
     }
-    
+    boxdraw <- boxdraw+1
+
     # go get sample.
     pts.sample <- getBASSample(shapefile = shapefile, bb = bb , n = draw, seeds = seedshift, boxes = boxes)
     n_samples <- base::length(pts.sample$sample$SiteID)
