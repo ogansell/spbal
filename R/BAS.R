@@ -237,7 +237,8 @@ getBASSampleDriver <- function(shapefile, bb, n, seeds, verbose = FALSE){
     }
     # find the first point in the study region (picked at random), specifically we want to
     # find the seeds that give us the first point in the study region.
-    first.pt <- findFirstStudyRegionPoint(shapefile = shapefile, bb = bb, seeds = seeds, verbose = verbose)
+    # first.pt <- findFirstStudyRegionPoint(shapefile = shapefile, bb = bb, seeds = seeds, verbose = verbose)
+    first.pt <- setBASSeed(shapefile = shapefile, bb = bb, verbose = verbose)
 
     # get the index of the first point (actually the SiteID).
     k <- first.pt$k

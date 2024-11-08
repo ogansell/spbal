@@ -98,3 +98,59 @@ findFirstStudyRegionPoint <- function(shapefile, bb, seeds, verbose = FALSE){
   return(result)
 }
 
+## Potentially faster than sf st_sample simple random sample of polygon.
+## Not to be exported for now. Likely slower in some situations.
+SRSPoly <- function(n = 1, shapefile, bb, verbose = FALSE){
+  bb.bounds <- sf::st_bbox(bb)
+  n_found <- 0
+  ndraw <- n + 10
+  while(n_found < n){
+    xy <- cbind(runif(ndraw, bb.bounds["xmin"], bb.bounds["xmax"]), runif(ndraw, bb.bounds["ymin"], bb.bounds["ymax"]))
+    pts.coord <- sf::st_as_sf(base::data.frame(SiteID = 1:ndraw, xy), coords = c(2, 3))
+    
+    sf::st_crs(pts.coord) <- sf::st_crs(bb)
+    # find the intersection. Generates the same as sf::st_intersection(pts.coord, shapefile)
+    if(n_found == 0) {
+      pts.intersect <- pts.coord[shapefile,]
+    }else{ 
+      pts.intersect <- rbind( pts.intersect, pts.coord[shapefile,] )
+    }
+    n_found <- nrow(pts.intersect)
+    ndraw <- ndraw*2
+  }
+  return(sf::st_coordinates(pts.intersect[1:n,]))
+}
+
+## Function to find a random point in the polygon and to then find where in the Halton Sequence it is.
+## Blair to provide better algebra than my current method.
+setBASSeed <- function(shapefile, bb, verbose = FALSE){
+  bases <- base::c(2, 3)
+  crs <- sf::st_crs(shapefile)
+  
+  bb.bounds <- sf::st_bbox(bb)
+  scale.bas <- bb.bounds[3:4] - bb.bounds[1:2]
+  shift.bas <- bb.bounds[1:2]
+  
+  bases <- c(2,3)
+  J <- c(7,5)
+  Bxy <- bases^J
+  seeds <- c(0,0)
+
+  ## Get a single random sample from the polygon.
+  pts.unif <- SRSPoly(n = 1, shapefile, bb, verbose)
+
+  upts <- (pts.unif - shift.bas)/scale.bas
+
+  Axy <- cbind(floor((upts[,1] + 2*.Machine$double.eps)*bases[1]^J[1]), 
+               floor((upts[,2] + 2*.Machine$double.eps)*bases[2]^J[2]))
+  ix <- round(spbal:::cppBASpts(n = Bxy[1], seeds = 0, bases = bases[1], FALSE)$pts*Bxy[1],0)  ## Make sure it's an integer
+  iy <- round(spbal:::cppBASpts(n = Bxy[2], seeds = 0, bases = bases[2], FALSE)$pts*Bxy[2],0)
+  seeds[1] <- which(ix == Axy[1]) - 1  ## Starts at 0.
+  seeds[2] <- which(iy == Axy[2]) - 1
+  
+  U <- sample(10000, 2, replace = TRUE)
+  seeds <- seeds + U*Bxy
+
+  result <- base::list(seeds = seeds, k = 1) ## Keep k for backward compatability.
+  return(result)
+}

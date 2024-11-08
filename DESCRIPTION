@@ -18,7 +18,7 @@ Description: Encapsulates a number of spatially balanced sampling algorithms,
 Depends: R (>= 3.6.0)
 License: MIT + file LICENSE
 Encoding: UTF-8
-Imports: units, sf, Rcpp
+Imports: units, sf, Rcpp, lwgeom
 SystemRequirements: C++17
 Suggests: knitr, rmarkdown, testthat (>= 3.0.0), bookdown, ggplot2,
         gridExtra
