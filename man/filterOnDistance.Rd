@@ -28,15 +28,15 @@ The distances are calculated as great circles over an oblate spheroid and the un
 Key points:
 
 \itemize{
-\item \code{result$minRadius} is nonempty (it always contains x1). Hence, if the user chooses a crazy minRadius, they get one point.
-\item \code{result$minRadius} is a subset of result$overSample.
-\item The number of points in result$minRadius is random. That's fine!
-\item If they want n points and result$minRadius has less than n, too bad! They can reduce minRadius and/or increase the iterations parameter.
-\item If they want a sample with the minimum radius property, they use:
-\itemize{
-\item \code{smp <- result$minRadius}
-\item \code{sample <- smp[1:n,]}
-}
+  \item \code{result$minRadius} is nonempty (it always contains x1). Hence, if the user chooses a crazy minRadius, they get one point.
+  \item \code{result$minRadius} is a subset of result$overSample.
+  \item The number of points in result$minRadius is random. That's fine!
+  \item If they want n points and result$minRadius has less than n, too bad! They can reduce minRadius and/or increase the iterations parameter.
+  \item If they want a sample with the minimum radius property, they use:
+   \itemize{
+            \item \code{smp <- result$minRadius}
+            \item \code{sample <- smp[1:n,]}
+   }
 }
 }
 \author{

@@ -56,9 +56,9 @@ parameter. If the minRadius parameter is not specified then the minRadius variab
 \description{
 HIP draws spatially balanced samples and over-samples from point
 resources by partitioning the resource into boxes with the same nested structure
-as Halton boxes. The \strong{spbal} parameter \strong{iterations} defines the number of
+as Halton boxes. The **spbal** parameter **iterations** defines the number of
 boxes used in the HIP partition and should be larger than the sample size but
-less than the population size. The \strong{iterations parameter} also defines the
+less than the population size. The **iterations parameter** also defines the
 number of units available in the HIP over-sample, where the over-sample contains
 one unit from each box in the HIP partition.
 }

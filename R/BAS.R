@@ -229,32 +229,20 @@ getBASSampleDriver <- function(shapefile, bb, n, seeds, verbose = FALSE){
   # The assumption is that if seeds are not null then user has previously run this to get
   # a sample and associated seeds.
   if(base::is.null(seeds)){
-    seeds <- generateUVector()
-    if(verbose){
-      msg <- "spbal(getBASSampleDriver) Seeds from generateUVector() u1 = %s, u2 = %s."
-      msgs <- base::sprintf(msg, seeds[1], seeds[2])
-      base::message(msgs)
-    }
+    # seeds <- generateUVector()
     # find the first point in the study region (picked at random), specifically we want to
     # find the seeds that give us the first point in the study region.
     # first.pt <- findFirstStudyRegionPoint(shapefile = shapefile, bb = bb, seeds = seeds, verbose = verbose)
-    first.pt <- setBASSeed(shapefile = shapefile, bb = bb, verbose = verbose)
-
-    # get the index of the first point (actually the SiteID).
-    k <- first.pt$k
-    # calculate new seeds.
-    seedshift <- base::c(first.pt$seeds[1] + k - 1, first.pt$seeds[2] + k - 1)
+    seeds <- setBASSeed(shapefile = shapefile, bb = bb, n=1, verbose = verbose)
     if(verbose){
-      msg <- "spbal(getBASSampleDriver) New seeds for first point u1 = %s, u2 = %s."
-      msgs <- base::sprintf(msg, seedshift[1], seedshift[2])
+      msg <- "spbal(getBASSampleDriver) Seeds from sf::st_sample and translates that to a BAS point."
+      msgs <- base::sprintf(msg, seeds[1], seeds[2])
       base::message(msgs)
     }
-  } else {
-    seedshift <- seeds
-  } # end is.null(seeds)
+  }
 
   ## Check bounding box and find efficient Halton indices (boxes)
-  BASInfo <- setBASIndex(shapefile, bb, seedshift)
+  BASInfo <- setBASIndex(shapefile, bb, seeds)
   boxes <- BASInfo$boxes
 
   # number of samples required.
@@ -282,7 +270,7 @@ getBASSampleDriver <- function(shapefile, bb, n, seeds, verbose = FALSE){
     boxdraw <- boxdraw+1
 
     # go get sample.
-    pts.sample <- getBASSample(shapefile = shapefile, bb = bb , n = draw, seeds = seedshift, boxes = boxes)
+    pts.sample <- getBASSample(shapefile = shapefile, bb = bb , n = draw, seeds = seeds, boxes = boxes)
     n_samples <- base::length(pts.sample$sample$SiteID)
 
     ## First time create ret_sample
@@ -306,7 +294,6 @@ getBASSampleDriver <- function(shapefile, bb, n, seeds, verbose = FALSE){
     base::message(msgs)
   }
 
-  seeds <- seedshift
   # add a sample ID for the user.
   ret_sample$spbalSeqID <- base::seq(1, base::length(ret_sample$SiteID))
   # add the "Count" feature for NZ_DOC (acts as a unique ID for backward compatibility purposes).

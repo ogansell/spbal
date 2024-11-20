@@ -59,12 +59,12 @@ parameter is NULL then the $minRadius returned will also be NULL.
 The sample points are returned in the form of a simple feature collection of POINT objects.
 They have the following attributes:
 \itemize{
-\item \code{SiteID} A unique identifier for every sample point. This
-encodes the BAS order.
-\item \code{spbalSeqID} A unique identifier for every sample point. This
-encodes the BAS sample order.
-\item \code{geometry} The XY co-ordinates of the sample point in the CRS of the original
-shapefile.
+  \item \code{SiteID} A unique identifier for every sample point. This
+  encodes the BAS order.
+  \item \code{spbalSeqID} A unique identifier for every sample point. This
+  encodes the BAS sample order.
+  \item \code{geometry} The XY co-ordinates of the sample point in the CRS of the original
+  shapefile.
 }
 }
 \description{

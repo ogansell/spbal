@@ -66,8 +66,8 @@ collection of POINT objects. As well as having the features from the original \c
 the following new attributes have been added:
 
 \itemize{
-\item \code{spbalSeqID}: A unique identifier for every sample point.
-\item \code{ID}: A unique identifier, the Halton frame point order.
+  \item \code{spbalSeqID}: A unique identifier for every sample point.
+  \item \code{ID}: A unique identifier, the Halton frame point order.
 }
 }
 \description{
