@@ -21,7 +21,7 @@ A list containing the following variables:
 }
 \description{
 Partition the resource into boxes with the same nested structure as Halton boxes.
-The \strong{spbal} parameter \strong{iterations} defines the number of boxes used in the HIP partition and
+The **spbal** parameter **iterations** defines the number of boxes used in the HIP partition and
 should be larger than the sample size but less than the population size.
 }
 \author{

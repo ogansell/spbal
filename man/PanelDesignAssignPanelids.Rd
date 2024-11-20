@@ -40,9 +40,9 @@ i.e. no informational messages are displayed.}
 Returns a list of the following variables:
 
 \itemize{
-\item \code{sample} This is a sample from the original shapefile that has had the
-appropriate panel id's add as a feature. The panel id values are determined by the
-panels and panel_overlap parameters.
+  \item \code{sample} This is a sample from the original shapefile that has had the
+   appropriate panel id's add as a feature. The panel id values are determined by the
+   panels and panel_overlap parameters.
 }
 }
 \description{

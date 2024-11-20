@@ -25,12 +25,12 @@ overlaps any region.}
 A list containing four variables, they are detailed below.
 
 \itemize{
-\item \code{n} When the \code{panels} parameter is not null, the \code{n} parameter is set
-using the sum of all the panel sizes in \code{panels}.
-\item \code{panel_design} A boolean, TRUE, indicates that the user wants a panels design.
-\item \code{number_panels} The number of panels specified in the panel design.
-\item \code{panel_overlap} Updated panel_overlap vector, the first element is always forced
-to zero irrespective of what the user specified.
+  \item \code{n} When the \code{panels} parameter is not null, the \code{n} parameter is set
+  using the sum of all the panel sizes in \code{panels}.
+  \item \code{panel_design} A boolean, TRUE, indicates that the user wants a panels design.
+  \item \code{number_panels} The number of panels specified in the panel design.
+  \item \code{panel_overlap} Updated panel_overlap vector, the first element is always forced
+  to zero irrespective of what the user specified.
 }
 }
 \description{

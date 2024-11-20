@@ -24,7 +24,7 @@ Suggests: knitr, rmarkdown, testthat (>= 3.0.0), bookdown, ggplot2,
         gridExtra
 VignetteBuilder: knitr
 LinkingTo: Rcpp, RcppThread
-RoxygenNote: 7.3.1
+RoxygenNote: 7.3.2
 Config/testthat/edition: 3
 NeedsCompilation: yes
 Packaged: 2024-05-17 11:27:33 UTC; phil

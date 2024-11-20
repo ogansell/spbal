@@ -98,3 +98,90 @@ findFirstStudyRegionPoint <- function(shapefile, bb, seeds, verbose = FALSE){
   return(result)
 }
 
+
+# setBASSeed.R
+
+#' @name setBASSeed
+#'
+#' @title Randomly generates a point in the study region and maps it to the Halton Sequence.
+#'
+#' @description This function uses sf::st_sample() to generate a random point in the study region.
+#' it then maps that point to the Halton Sequence to ensure that the random starting point is within the region.
+#' this function is used internally, but may useful for faster seed generation in a simulation study using BAS.
+#'
+#' @author Paul van Dam-Bates
+#'
+#' @param shapefile Shape file as a polygon (sp or sf) of the study area(s).
+#' @param bb Bounding box which defines the sample. A bounding box must be
+#' supplied and may not necessarily be the bounding box of the provided shape.
+#' @param n Number of seeds to produce.
+#' @param verbose Boolean if you want to see any output printed to screen. Helpful if taking a
+#' long time. Default is FALSE i.e. no informational messages are displayed.
+#'
+#' @return A vector when n = 1 (Default), or a matrix when n > 1.
+#'
+#' @export
+setBASSeed <- function(shapefile, bb, n=1, verbose = FALSE){
+  bases <- base::c(2, 3)
+  crs <- sf::st_crs(shapefile)
+  
+  bb.bounds <- sf::st_bbox(bb)
+  scale.bas <- bb.bounds[3:4] - bb.bounds[1:2]
+  shift.bas <- bb.bounds[1:2]
+  
+  bases <- c(2,3)
+  J <- c(11,9)
+  Bxy <- bases^J
+
+  ## Get a single random sample from the polygon.
+  # pts.unif <- SRSPoly(n = 1, shapefile, bb, verbose)
+  pts.unif <- sf::st_sample(shapefile, size = n, type = "random")
+
+  upts <- (sf::st_coordinates(pts.unif) - shift.bas)
+  upts <- cbind(upts[,1]/scale.bas[1], upts[,2]/scale.bas[2])
+  
+  a <- matrix(0, nrow = n, ncol = 2)
+  for( i in 1:2 ) {
+    bj <- 1
+    for( j in 1:J[i] ){
+      bj <- bj*bases[i]
+      a[,i] <- a[,i] + floor((upts[,i] * bj) %% bases[i])*(bj/bases[i])
+    }
+  }
+  
+  ## Right now it is a random sample of 2^11 in x and 3^9 in y.
+  ## Found 1 duplicate in 1000 draws so added some more randomness here.
+  U <- sample(100, 2, replace = TRUE) ## Don't want to get into integer overflow so don't want the seed too large.
+  seeds <- cbind(a[,1] + U[1]*Bxy[1], a[,2] + U[2]*Bxy[2])
+  
+  ## ***Phil and Blair*** Should we confirm that the point is still within the sample? 
+  ## Might need to loop through this in that case then.
+
+  if(n == 1) return(seeds[1,])
+  return(seeds)
+}
+
+
+
+## Potentially faster than sf st_sample simple random sample of polygon.
+## Not to be exported for now. Likely slower in some situations.
+# SRSPoly <- function(n = 1, shapefile, bb, verbose = FALSE){
+  # bb.bounds <- sf::st_bbox(bb)
+  # n_found <- 0
+  # ndraw <- n + 10
+  # while(n_found < n){
+    # xy <- cbind(runif(ndraw, bb.bounds["xmin"], bb.bounds["xmax"]), runif(ndraw, bb.bounds["ymin"], bb.bounds["ymax"]))
+    # pts.coord <- sf::st_as_sf(base::data.frame(SiteID = 1:ndraw, xy), coords = c(2, 3))
+    
+    # sf::st_crs(pts.coord) <- sf::st_crs(bb)
+    ## find the intersection. Generates the same as sf::st_intersection(pts.coord, shapefile)
+    # if(n_found == 0) {
+      # pts.intersect <- pts.coord[shapefile,]
+    # }else{ 
+      # pts.intersect <- rbind( pts.intersect, pts.coord[shapefile,] )
+    # }
+    # n_found <- nrow(pts.intersect)
+    # ndraw <- ndraw*2
+  # }
+  # return(sf::st_coordinates(pts.intersect[1:n,]))
+# }

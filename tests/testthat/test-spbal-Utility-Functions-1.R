@@ -20,3 +20,25 @@ testthat::test_that("3. Compare cppBASpts() and cppRSHalton_br() same n, bases."
   expect_equal(chp$pts, chpbr$pts)
 })
 
+testthat::test_that("4. Ensure seeds are random for BAS - testing setBASSeed().", {
+  set.seed(1)
+
+  ## We will make up a long and skinny shape inside a really big bounding box.
+  ## Then sample and make sure nothing weird happens.
+  vals <- data.frame(X = runif(30, 0, 10), Y = runif(30, 0, 100))
+  bb.df <- c("xmin" = -10.222, "ymin" = -20.1525, "xmax" = 133.54, "ymax" = 525.223)
+  bb <- sf::st_as_sfc(sf::st_bbox(bb.df))
+  shp <- sf::st_as_sf(vals, coords = c("X", "Y")) |> sf::st_buffer(4) |> sf::st_union()
+  shp <- sf::st_cast(sf::st_combine(shp), "POLYGON")
+
+  set.seed(234)
+  res <- NULL
+  for( i in 1:1000 ){
+    seed <- setBASSeed(shp, bb, n = 1)
+    res <- rbind(res, setBASSeed(shp, bb, n = 1))
+  }
+  duplicates <- which(duplicated(res))
+
+  ## Throw an error if any updates in the BAS start to not create all unique points.
+  expect_length(duplicates, 0)
+})

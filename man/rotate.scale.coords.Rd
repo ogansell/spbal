@@ -17,7 +17,7 @@ rotate.scale.coords(coords, bb, back = TRUE)
 sf spatial points with projection defined in bb.
 }
 \description{
-Given some coordinates on [0,1)x[0,1), shift and scale them to the bounding box, and then rotate
+Given some coordinates on \[0,1)x\[0,1), shift and scale them to the bounding box, and then rotate
 them given the bounding box rotation defined by the Master Sample.
 }
 \author{
